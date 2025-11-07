@@ -2,7 +2,7 @@ apiVersion: vmoperator.vmware.com/v1alpha4
 kind: VirtualMachineService
 metadata:
   name: vmapptier1-service
-  namespace: apptier2-blm
+  namespace: vmservice
 spec:
   selector:
     app: vmapptier2

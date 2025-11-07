@@ -3,7 +3,7 @@ kind: Subnet
 metadata:
   annotations: {}
   name: vmapptier2-blm-subnet
-  namespace: apptier2-blm
+  namespace: vmservice
 spec:
   subnetDHCPConfig: {mode: "DHCPServer"}
   accessMode: Private
