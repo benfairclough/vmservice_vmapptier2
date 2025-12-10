@@ -2,7 +2,7 @@ apiVersion: vmoperator.vmware.com/v1alpha4
 kind: VirtualMachine
 metadata:
   name: vmapptier2-2
-  namespace: apptier2-blm
+  namespace: vmservice
   labels:
     app: vmapptier2
 spec:
@@ -20,7 +20,7 @@ spec:
         network:
           apiVersion: crd.nsx.vmware.com/v1alpha1
           kind: Subnet
-          name: vmapptier2-blm-subnet
+          name: vmvmservice-subnet
 
 ---
 
@@ -28,7 +28,7 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: vmapptier2-2-bootstrap-secret
-  namespace: apptier2-blm
+  namespace: vmservice
   labels:
     vm-selector: vmapptier2
 stringData:
