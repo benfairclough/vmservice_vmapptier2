@@ -1,0 +1,83 @@
+apiVersion: vmoperator.vmware.com/v1alpha4
+kind: VirtualMachine
+metadata:
+  name: vmapptier2-2
+  namespace: vmservice
+  labels:
+    app: vmapptier2
+spec:
+  imageName: vmi-4c48b6f40db2f6384
+  className: best-effort-xsmall
+  storageClass: home-mgmt-cl01-optimal-datastore-default-policy-raid5
+  bootstrap:
+    cloudInit:
+      rawCloudConfig:
+        name: vmapptier2-2-bootstrap-secret
+        key: user-data
+  network:
+    interfaces:
+      - name: eth0
+        network:
+          apiVersion: crd.nsx.vmware.com/v1alpha1
+          kind: Subnet
+          name: vmapptier2-blm-subnet
+
+---
+
+apiVersion: v1
+kind: Secret
+metadata:
+  name: vmapptier2-2-bootstrap-secret
+  namespace: vmservice
+  labels:
+    vm-selector: vmapptier2
+stringData:
+  user-data: |
+    #cloud-config
+            hostname: vmapptier2-2
+            create_hostname_file: true
+            users:
+              - name: ben
+                plain_text_passwd:
+                lock_passwd: false
+                sudo:
+                  - ALL=(ALL) NOPASSWD:ALL
+                groups: sudo
+                shell: /bin/bash
+            packages:
+              - git
+              - net-tools
+              - npm
+              - traceroute
+              - nginx
+            runcmd:
+              - date > /etc/birth_certificate
+              - git clone https://github.com/benfairclough/code-simplewebsite.git
+              - cp /SimpleWebsite/index.html /var/www/html/
+              - sed -i -e 's/nginx!/nginx!BOX3/g' /var/www/html/index.nginx-debian.html  
+            salt_minion:
+              conf:
+            #    file_client: local
+            #    fileserver_backend: [gitfs]
+            #    gitfs_remotes: ['https://github.com/_user_/_repo_.git']
+                master: salt.example.com
+            #  config_dir: /etc/salt
+            #  grains:
+            #    role: [web]
+            #  pkg_name: salt-minion
+            #  pki_dir: /etc/salt/pki/minion
+            #  private_key: '------BEGIN PRIVATE KEY------
+            #
+            #    <key data>
+            #
+            #    ------END PRIVATE KEY-------
+            #
+            #  '
+            # public_key: '------BEGIN PUBLIC KEY-------
+            #
+            #   <key data>
+            #
+            #   ------END PUBLIC KEY-------
+            #
+            #   '
+            # service_name: salt-minion
